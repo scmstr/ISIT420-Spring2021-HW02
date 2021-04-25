@@ -10,7 +10,7 @@ const Orders = require("../Orders");
 // edited to include my non-admin, user level account and PW on mongo atlas
 // and also to include the name of the mongo DB that the collection
 const dbURI =
-  "Enter connection string here";
+"put mongo connect string here";
 
 // Make Mongoose use `findOneAndUpdate()`. Note that this option is `true`
 // by default, you need to set it to false.
