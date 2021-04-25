@@ -5,7 +5,7 @@ var router = express.Router();
 // .ADO.Net is a wrapper over raw SQL server interface
 const mongoose = require("mongoose");
 
-const Chips = require("../Chips");
+const Orders = require("../Orders");
 
 // edited to include my non-admin, user level account and PW on mongo atlas
 // and also to include the name of the mongo DB that the collection
@@ -21,6 +21,9 @@ const options = {
   poolSize: 10
 };
 
+var hourPurchTracker = -1;
+var dayPurchTracker = 0;
+
 mongoose.connect(dbURI, options).then(
   () => {
     console.log("Database connection established!");
@@ -35,66 +38,86 @@ router.get('/', function (req, res) {
   res.sendFile('index.html');
 });
 
-/* GET all Chips */
-router.get('/Chips', function (req, res) {
-  // find {  takes values, but leaving it blank gets all}
-  Chips.find({}, (err, AllChips) => {
-    if (err) {
-      console.log(err);
-      res.status(500).send(err);
-    }
-    res.status(200).json(AllChips);
-  });
+/* GET all Orders */
+// router.get('/Orders', function (req, res) {
+//   // find {  takes values, but leaving it blank gets all}
+//   Orders.find({}, (err, AllOrders) => {
+//     if (err) {
+//       console.log(err);
+//       res.status(500).send(err);
+//     }
+//     res.status(200).json(AllOrders);
+//   });
+// });
+
+/* post a new Order with Hour and Day Purch values without pushing to MongoDB */
+router.post('/HourDayPurch', function (req, res) {
+  hourPurchTracker++;
+  
+  let newOrder = req.body;
+  newOrder.hourPurch = hourPurchTracker;
+
+  if (hourPurchTracker === 24){
+    hourPurchTracker = 0;
+    dayPurchTracker++;
+
+    // Reset hour purch
+    newOrder.hourPurch = hourPurchTracker;
+    newOrder.dayPurch = dayPurchTracker;
+  } 
+  
+  console.log(newOrder);
+  res.status(201).json(newOrder);
 });
 
-/* post a new Chip and push to Mongo */
-router.post('/NewChip', function (req, res) {
+/* post a new Order and push to Mongo */
+// router.post('/NewOrder', function (req, res) {
 
-  let oneNewChip = new Chips(req.body);  // call constuctor in Chips code that makes a new mongo chip object
-  console.log(req.body);
-  oneNewChip.save((err, chip) => {
-    if (err) {
-      res.status(500).send(err);
-    }
-    else {
-      console.log(chip);
-      res.status(201).json(chip);
-    }
-  });
-});
+//   let oneNewOrder = new Orders(req.body);  // call constuctor in Orders code that makes a new mongo order object
+//   console.log(req.body);
+//   oneNewOrder.save((err, order) => {
+//     if (err) {
+//       res.status(500).send(err);
+//     }
+//     else {
+//       console.log(order);
+//       res.status(201).json(order);
+//     }
+//   });
+// });
 
-router.delete('/DeleteChip/:id', function (req, res) {
-  Chips.deleteOne({ _id: req.params.id }, (err, note) => {
-    if (err) {
-      res.status(404).send(err);
-    }
-    res.status(200).json({ message: "Chip successfully deleted" });
-  });
-});
+// router.delete('/DeleteOrder/:id', function (req, res) {
+//   Orders.deleteOne({ _id: req.params.id }, (err, note) => {
+//     if (err) {
+//       res.status(404).send(err);
+//     }
+//     res.status(200).json({ message: "Order successfully deleted" });
+//   });
+// });
 
-router.put('/UpdateChip/:id', function (req, res) {
-  Chips.findOneAndUpdate(
-    { _id: req.params.id },
-    { name: req.body.name, flavor: req.body.flavor, brand: req.body.brand, eaten: req.body.eaten },
-    { new: true },
-    (err, chip) => {
-      if (err) {
-        res.status(500).send(err);
-      }
-      res.status(200).json(chip);
-    })
-})
+// router.put('/UpdateOrder/:id', function (req, res) {
+//   Orders.findOneAndUpdate(
+//     { _id: req.params.id },
+//     { name: req.body.name, flavor: req.body.flavor, brand: req.body.brand, eaten: req.body.eaten },
+//     { new: true },
+//     (err, order) => {
+//       if (err) {
+//         res.status(500).send(err);
+//       }
+//       res.status(200).json(order);
+//     })
+// })
 
-/* GET one Chip */
-router.get('/FindChip/:id', function (req, res) {
-  console.log(req.params.id);
-  Chips.find({ _id: req.params.id }, (err, oneChip) => {
-    if (err) {
-      console.log(err);
-      res.status(500).send(err);
-    }
-    res.status(200).json(oneChip);
-  });
-});
+/* GET one Order */
+// router.get('/FindOrder/:id', function (req, res) {
+//   console.log(req.params.id);
+//   Orders.find({ _id: req.params.id }, (err, oneOrder) => {
+//     if (err) {
+//       console.log(err);
+//       res.status(500).send(err);
+//     }
+//     res.status(200).json(oneOrder);
+//   });
+// });
 
 module.exports = router;

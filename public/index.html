@@ -3,61 +3,32 @@
 
 <head>
     <meta charset="utf-8">
-    <title>(chips-modified)starter code</title>
+    <title>Single Order</title>
     <link rel="stylesheet" type="text/css" href="/stylesheets/index.css">
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 </head>
 
 
-<body background="images/chipsonplate01.jpg">
-    <h2>List Of Chips</h2>
+<body>
+    
     <div class="grid-container">
-   
-
+           
         <div class="grid-item">
-            <h3>Chips In Database</h3>
-            <button type="button" id=get>Show Existing</button>
-            <ul id="listUl"></ul>
+            <h3>Single Order</h3>
+            <label for="storeid">StoreID:</label>
+            <input type="text" id="storeid" disabled><br><br>
+            <label for="salespersonid">SalesPersonID:</label>
+            <input type="text" id="salespersonid" disabled><br><br>
+            <label for="cdid">CdID:</label>
+            <input type="text" id="cdid" disabled><br><br>
+            <label for="pricepaid">PricePaid:</label>
+            <input type="text" id="pricepaid" disabled><br><br>
+            <label for="hourpurch">HourPurch:</label>
+            <input type="text" id="hourpurch" disabled><br><br>
+            <label for="daypurch">DayPurch:</label>
+            <input type="text" id="daypurch" disabled><br><br>
+            <button type="button" id=submitone>SUBMIT-ONE</button>
         </div>
-    
-
-        <div class="grid-item">
-            <h3>Add a new Chip</h3>
-            <label for="name">Chip Name:</label>
-            <input type="text" id="name" name="fname"><br><br>
-            <label for="flavor">Chip Flavor:</label>
-            <input type="text" id="flavor" name="fname"><br><br>
-            <label for="brand">Chip Brand:</label>
-            <input type="text" id="brand" name="fname"><br><br>
-            <button type="button" id=submit>SUBMIT</button>
-        </div>
-
-
-        <div class="grid-item">
-            <h3>Delete Chip by Name</h3>
-            <div>
-                Enter Chip Name here:  <input type="text" id="deleteName"><br><br>
-                <button type="button" id=delete>DELETE</button><br>
-            </div>
-        </div>
-
-    
-        <div class="grid-item">
-            <h3>Edit Chip Database Entry </h3>
-            <div>
-                Enter Chip Name here:  <input type="text" id="modName"><br><br>
-                <button type="button" id=find>FIND</button><br>
-            </div>
-            <div>
-                <h3>Edit these fields</h3>
-            <input type="text" id="mname" ><br><br>
-            <input type="text" id="mflavor" ><br><br>
-            <input type="text" id="mbrand" ><br><br>
-            <input type="text" id="meaten" ><br><br>
-            <button type="button" id=msubmit>SUBMIT</button>
-            </div>
-        </div>
-
 
 </div>
 
