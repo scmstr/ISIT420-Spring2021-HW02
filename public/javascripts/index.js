@@ -52,8 +52,62 @@ var ClientNotes = [];  // our local copy of the cloud data
 
 
 document.addEventListener("DOMContentLoaded", function (event) {
+    
+    //makes a new randomized order object
+    function GenerateNew() {
+        //generate some random stuff
+        var randomSeller = Math.floor(Math.random() * 24 + 1);
+        var randomCd = Math.floor(Math.random() * 10 + 1);
+        var randomPrice = Math.floor(Math.random() * 15 + 1);
 
+        //get new objects from randomized numbers
+        var newSalesPerson = SalesPeople[randomSeller-1];
+        var newCd = CDs[randomCd-1];
+
+        //populate new randomized order object
+        var anOrder = new Order(newSalesPerson.StoreZip, newSalesPerson.sellerID, newCd.cdID, randomPrice);
+        return anOrder;
+    }
+
+    //BUTTON #1, make new randomized order, display it in text fields
+    document.getElementById("genNewFake").addEventListener("click", function () {
+        //target the html text boxes
+        var fakeStoreId =  document.getElementById("fakeStoreId");
+        var fakeSalesPersonId = document.getElementById("fakeSalesPersonId");
+        var fakeCdId = document.getElementById("fakeCdId");
+        var fakePricePaid = document.getElementById("fakePricePaid");
+
+        //target button #2's text fields
+        var tStoreID =  document.getElementById("storeid");
+        var tSalesPersonID = document.getElementById("salespersonid");
+        var tCdID = document.getElementById("cdid");
+        var tPricePaid = document.getElementById("pricepaid");
+        var tHourPurch = document.getElementById("hourpurch");
+        var tDayPurch = document.getElementById("daypurch");
+
+
+    
+        //generate a new randomized object
+        var fakeOrder = GenerateNew();
+
+        //display the values into targeted text boxes on the html page
+        fakeStoreId.value = fakeOrder.storeID;
+        fakeSalesPersonId.value = fakeOrder.salesPersonID;
+        fakeCdId.value = fakeOrder.cdID;
+        fakePricePaid.value = fakeOrder.pricePaid;
+
+        //display same values onto button #2's text fields, to be deployed with button #2
+        tStoreID.value = fakeOrder.storeID;
+        tSalesPersonID.value = fakeOrder.salesPersonID;
+        tCdID.value = fakeOrder.cdID;
+        tPricePaid.value = fakeOrder.pricePaid;
+        //tHourPurch.value = "";
+        //tDayPurch.value = "";
+    });
+
+    //BUTTON #2
     document.getElementById("submitone").addEventListener("click", function () {
+        //targets html text boxes in button 2
         var tStoreID =  document.getElementById("storeid").value;
         var tSalesPersonID = Number(document.getElementById("salespersonid").value);//Number
         var tCdID = document.getElementById("cdid").value;
@@ -62,8 +116,10 @@ document.addEventListener("DOMContentLoaded", function (event) {
         var tDayPurch = Number(document.getElementById("daypurch").value);//Number
         var returnedOrder = null;
     
+        //creates an order object from text fields
         var oneOrder = new Order(tStoreID, tSalesPersonID, tCdID, tPricePaid);
 
+        //submit the single "oneOrder" object
         $.ajax({
             url: '/HourDayPurch',
             method: 'POST',
@@ -80,35 +136,45 @@ document.addEventListener("DOMContentLoaded", function (event) {
     });
 
 
-    //makes a new randomized order object
-    function GenerateNew() {
-        //generate some random stuff
-        var randomSeller = Math.floor(Math.random() * 24 + 1);
-        var randomCd = Math.floor(Math.random() * 10 + 1);
-        var randomPrice = Math.floor(Math.random() * 15 + 1);
 
-        //get new objects from randomized numbers
-        var newSalesPerson = SalesPeople[randomSeller];
-        var newCd = CDs[randomCd];
+    //BUTTON #3 - submitt 500 new entries
+    var submisionsToMake = 25; //used for testing: FOR ASSIGNMENT SUBMISSION MUST BE 500
+    var heyo = document.getElementById("push500");
+    heyo.textContent = "SUBMIT" + submisionsToMake;
+    document.getElementById("push500").addEventListener("click", function () {
+        //setup some validators
+        var complete = false;
+        var counter = 0;
+        
+        //each loop generates new order and submits it
+        while(!complete)
+        {
+            //generate a new randomized order object
+            var anOrder = GenerateNew();
 
-        //populate new randomized order object
-        var anOrder = new Order(newSalesPerson.StoreZip, newSalesPerson.sellerID, newCd.cdID, randomPrice);
-        return anOrder;
-    }
+            //submit the order object into mongo
+            $.ajax({
+                url: '/HourDayPurch',
+                method: 'POST',
+                dataType: 'json',
+                contentType: 'application/json',
+                data: JSON.stringify(anOrder),
+                success: function (result) {
+                    returnedOrder = result;
+                    document.getElementById("hourpurch").value = returnedOrder.hourPurch;
+                    document.getElementById("daypurch").value = returnedOrder.dayPurch;
+                    console.log(returnedOrder);
+                }
+            });
 
-    //press button1, make new randomized order, display it in text fields
-    document.getElementById("genNewFake").addEventListener("click", function () {
-        var fakeStoreId =  document.getElementById("fakeStoreId");
-        var fakeSalesPersonId = document.getElementById("fakeSalesPersonId");
-        var fakeCdId = document.getElementById("fakeCdId");
-        var fakePricePaid = document.getElementById("fakePricePaid");
-    
-        var fakeOrder = GenerateNew();
+            //count this submission(loop); if 500 have been counted, stop looping
+            counter++;
+            if(counter > (submisionsToMake-1)) {
+                complete = true;
+            }
+        }
 
-        fakeStoreId.value = fakeOrder.storeID;
-        fakeSalesPersonId.value = fakeOrder.salesPersonID;
-        fakeCdId.value = fakeOrder.cdID;
-        fakePricePaid.value = fakeOrder.pricePaid;
+        console.log("should be submitting [" + submisionsToMake + "] new objects: ");
     });
 
 
