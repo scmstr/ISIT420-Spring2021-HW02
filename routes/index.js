@@ -39,86 +39,28 @@ router.get('/', function (req, res) {
   res.sendFile('index.html');
 });
 
-/* GET all Orders */
-// router.get('/Orders', function (req, res) {
-//   // find {  takes values, but leaving it blank gets all}
-//   Orders.find({}, (err, AllOrders) => {
-//     if (err) {
-//       console.log(err);
-//       res.status(500).send(err);
-//     }
-//     res.status(200).json(AllOrders);
-//   });
-// });
-
 /* post a new Order with Hour and Day Purch values without pushing to MongoDB */
 router.post('/HourDayPurch', function (req, res) {
   hourPurchTracker++;
   
   let newOrder = req.body;
   newOrder.hourPurch = hourPurchTracker;
+  newOrder.dayPurch = dayPurchTracker;
 
   if (hourPurchTracker === 24){
+    // Reset hour purch
     hourPurchTracker = 0;
+
+    // Increment day purch
     dayPurchTracker++;
 
-    // Reset hour purch
+    // Set new hour and day purch values
     newOrder.hourPurch = hourPurchTracker;
     newOrder.dayPurch = dayPurchTracker;
-  } 
-  
+  }
+     
   console.log(newOrder);
   res.status(201).json(newOrder);
 });
-
-/* post a new Order and push to Mongo */
-// router.post('/NewOrder', function (req, res) {
-
-//   let oneNewOrder = new Orders(req.body);  // call constuctor in Orders code that makes a new mongo order object
-//   console.log(req.body);
-//   oneNewOrder.save((err, order) => {
-//     if (err) {
-//       res.status(500).send(err);
-//     }
-//     else {
-//       console.log(order);
-//       res.status(201).json(order);
-//     }
-//   });
-// });
-
-// router.delete('/DeleteOrder/:id', function (req, res) {
-//   Orders.deleteOne({ _id: req.params.id }, (err, note) => {
-//     if (err) {
-//       res.status(404).send(err);
-//     }
-//     res.status(200).json({ message: "Order successfully deleted" });
-//   });
-// });
-
-// router.put('/UpdateOrder/:id', function (req, res) {
-//   Orders.findOneAndUpdate(
-//     { _id: req.params.id },
-//     { name: req.body.name, flavor: req.body.flavor, brand: req.body.brand, eaten: req.body.eaten },
-//     { new: true },
-//     (err, order) => {
-//       if (err) {
-//         res.status(500).send(err);
-//       }
-//       res.status(200).json(order);
-//     })
-// })
-
-/* GET one Order */
-// router.get('/FindOrder/:id', function (req, res) {
-//   console.log(req.params.id);
-//   Orders.find({ _id: req.params.id }, (err, oneOrder) => {
-//     if (err) {
-//       console.log(err);
-//       res.status(500).send(err);
-//     }
-//     res.status(200).json(oneOrder);
-//   });
-// });
 
 module.exports = router;
