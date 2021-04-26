@@ -63,4 +63,39 @@ router.post('/HourDayPurch', function (req, res) {
   res.status(201).json(newOrder);
 });
 
+/* post a new Order with Hour and Day Purch values and save to MongoDB */
+router.post('/NewOrder', function (req, res) {
+  hourPurchTracker++;
+  
+  var oneNewOrder = new Orders(req.body);
+
+  oneNewOrder.hourPurch = hourPurchTracker;
+  oneNewOrder.dayPurch = dayPurchTracker;
+
+  if (hourPurchTracker === 24){
+    // Reset hour purch
+    hourPurchTracker = 0;
+
+    // Increment day purch
+    dayPurchTracker++;
+
+    // Set new hour and day purch values
+    oneNewOrder.hourPurch = hourPurchTracker;
+    oneNewOrder.dayPurch = dayPurchTracker;
+  }
+
+  console.log(oneNewOrder);
+  oneNewOrder.save((err, order) => {
+    if (err) {
+      console.log(order);
+      console.log(err);
+      res.status(500).send(err);
+    }
+    else {
+      console.log(order);
+      res.status(201).json(order);
+    }
+  });
+});
+
 module.exports = router;

@@ -8,29 +8,29 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const OrderSchema = new Schema({
-  StoreID: {
+  storeID: {
     type: String,
     required: true
   },
-  SalesPersonID: {
+  salesPersonID: {
     type: Number,
     required: true
   },
-  CdID: {
+  cdID: {
     type: String,
     required: true
   },
-  PricePaid: {
+  pricePaid: {
     type: Number,
     required: true
   },
-  HourPurch: {
+  hourPurch: {
     type: Number,
-    required: false
+    required: true
   },
-  DayPurch: {
+  dayPurch: {
     type: Number,
-    required: false
+    required: true
   }
 });
 
